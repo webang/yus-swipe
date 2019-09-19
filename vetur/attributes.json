@@ -1,0 +1,30 @@
+{
+  "yus-swipe/direction": {
+    "description": "轮播方向, default: horizontal",
+    "type": "*string*"
+  },
+  "yus-swipe/loop": {
+    "description": "是否无限模式, default: false",
+    "type": "*boolean*"
+  },
+  "yus-swipe/speed": {
+    "description": "轮播速度, default: 300",
+    "type": "*number*"
+  },
+  "yus-swipe/activeIndex": {
+    "description": "初始索引, default: 0",
+    "type": "*number*"
+  },
+  "yus-swipe/autoplay": {
+    "description": "轮播速度, default: false",
+    "type": "*boolean*"
+  },
+  "yus-swipe/delay": {
+    "description": "轮播间隔, default: 4000",
+    "type": "*number*"
+  },
+  "yus-swipe/effect": {
+    "description": "切换效果, default: slide",
+    "type": "*string*"
+  }
+}

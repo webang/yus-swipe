@@ -1,0 +1,14 @@
+{
+  "yus-swipe": {
+    "description": "API",
+    "attributes": [
+      "direction",
+      "loop",
+      "speed",
+      "activeIndex",
+      "autoplay",
+      "delay",
+      "effect"
+    ]
+  }
+}

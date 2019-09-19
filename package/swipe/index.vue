@@ -24,33 +24,19 @@
           v-for="(item, index) in realLength"
           :key="index"
           :class="{'yus-swipe-pagination-item-active': index === currentIndex}"
-        ></span>
+        />
       </div>
     </slot>
   </div>
 </template>
 
 <script>
-const Utils = {
-  now: function() {
-    return +new Date();
-  },
-  noop: function() {},
-  nextTick: function(fn, delay) {
-    setTimeout(fn || this.noop, delay || 0);
-  },
-  addEvent: function(element, type, handler, bool) {
-    element.addEventListener(type, handler, bool || false);
-  },
-  removeEvent: function() {
-    element.removeEventListener(type, handler, bool || false);
-  }
-};
+import Utils from '../utils';
 
-export const SHORT_TOUCH = 250;
-export const VERTICAL = 'vertical';
-export const HORIZONTAL = 'horizontal';
-export const RATIO = 0.3;
+const RATIO = 0.3;
+const SHORT_TOUCH = 250;
+const VERTICAL = 'vertical';
+const HORIZONTAL = 'horizontal';
 
 export default {
   props: {
@@ -60,41 +46,39 @@ export default {
       default: VERTICAL,
       validator: value => [VERTICAL, HORIZONTAL].indexOf(value) > -1
     },
-
     // 是否无限模式
     loop: {
       type: Boolean,
       default: false
     },
-
     // 轮播速度
     speed: {
       type: Number,
       default: 300
     },
-
     // 初始索引
     activeIndex: {
       type: Number,
       default: 0
     },
-
     // 是否自动轮播
     autoplay: {
       type: Boolean,
       default: false
     },
-
     // 轮播间隔
     delay: {
       type: Number,
-      default: 4000
+      default: 3000
     },
-
     // 切换效果
     effect: {
       type: String,
-      default: 'slide'
+      default: 'slide' // slide
+    },
+    spaceBetween: {
+      type: Number,
+      default: 20
     }
   },
 
@@ -120,7 +104,8 @@ export default {
         currentY: undefined,
         startTranslate: undefined,
         time: undefined,
-        isMoved: undefined
+        isMoved: undefined,
+        isTouched: undefined
       },
       gridIndex: 0,
       slidesGrid: [],
@@ -145,34 +130,28 @@ export default {
       return !!this.loop;
     },
     containerStl() {
-      if (this.isHorizontal) {
-        return {
-          width: `${this.slides.length * this.size}px`,
-          transform: `translate3d(${this.translate}px, 0, 0)`,
-          'transition-duration': `${this.transitionDuration}ms`
-        };
-      } else {
-        return {
-          height: `${this.slides.length * this.size}px`,
-          transform: `translate3d(0, ${this.translate}px, 0)`,
-          'transition-duration': `${this.transitionDuration}ms`
-        };
-      }
+      return {
+        'transition-duration': `${this.transitionDuration}ms`,
+        [this.rectProp]: `${this.slides.length * this.size}px`,
+        transform: this.isHorizontal
+          ? `translate3d(${this.translate}px, 0, 0)`
+          : `translate3d(0, ${this.translate}px, 0)`
+      };
     }
   },
 
   watch: {
     gridIndex(val) {
-      if (this.isLoop) {
-        if (val === 0) {
-          this.currentIndex = this.maxGridIndex - 1;
-        } else if (val === this.maxGridIndex) {
-          this.currentIndex = 0;
-        } else {
-          this.currentIndex = val - 1;
-        }
-      } else {
+      if (!this.isLoop) {
         this.currentIndex = val;
+        return;
+      }
+      if (val === 0) {
+        this.currentIndex = this.maxGridIndex - 1;
+      } else if (val === this.maxGridIndex) {
+        this.currentIndex = 0;
+      } else {
+        this.currentIndex = val - 1;
       }
     },
     currentIndex(val) {
@@ -199,9 +178,7 @@ export default {
       this.realLength = containerEl.children.length;
 
       // create loop
-      if (this.isLoop) {
-        this.createLoopEl();
-      }
+      if (this.isLoop) this.createLoopEl();
 
       // setup slides
       this.slides = containerEl.children;
@@ -225,9 +202,7 @@ export default {
       this.slideTo(this.gridIndex, 0);
 
       // setup autoplay
-      if (this.autoplay) {
-        this.start();
-      }
+      if (this.autoplay) this.start();
     },
 
     onTouchStart(event) {
@@ -239,6 +214,7 @@ export default {
       this.touches.startX = touch.pageX;
       this.touches.startY = touch.pageY;
       this.touches.startTranslate = this.translate;
+      this.touches.isTouched = true;
       this.touches.isMoved = false;
       this.transitionDuration = 0;
 
@@ -246,6 +222,8 @@ export default {
     },
 
     onTouchMove(event) {
+      if (!this.touches.isTouched) return;
+
       const { touches, isHorizontal } = this;
       const touch = this.getEventTouch(event);
 
@@ -270,35 +248,35 @@ export default {
       event.preventDefault();
 
       let translate = touches.diff + this.touches.startTranslate;
+      let resetTouch = () => {
+        touches.startX = touch.pageX;
+        touches.startY = touch.pageY;
+        touches.diff = 0;
+      };
 
       if (this.isLoop) {
         if (Math.abs(translate) >= this.maxTranslate) {
           this.slideTo(1, 0);
-          touches.startX = touch.pageX;
-          touches.startY = touch.pageY;
-          touches.diff = 0;
-          this.touches.startTranslate = touches.diff + 1 * this.size * -1;
-          this.setTranslate(touches.diff + 1 * this.size * -1);
+          resetTouch();
+          translate = touches.diff + 1 * this.size * -1;
+          this.touches.startTranslate = translate;
+          // this.setTranslate(translate);
         } else if (translate >= 0) {
           this.slideTo(this.slidesGrid.length - 2, 0);
-          touches.startX = touch.pageX;
-          touches.startY = touch.pageY;
-          touches.diff = 0;
-          let translate = touches.diff + (this.slidesGrid.length - 2) * this.size * -1;
+          resetTouch();
+          translate = touches.diff + (this.slidesGrid.length - 2) * this.size * -1;
           this.touches.startTranslate = translate;
-          this.setTranslate(translate);
+          // this.setTranslate(translate);
         } else {
-          this.setTranslate(translate);
+          // this.setTranslate(translate);
         }
       } else {
-        if (Math.abs(translate) >= this.maxTranslate) {
+        if (Math.abs(translate) >= this.maxTranslate || translate >= 0) {
           translate = touches.diff * RATIO + this.touches.startTranslate;
         }
-        if (translate >= 0) {
-          translate = touches.diff * RATIO + this.touches.startTranslate;
-        }
-        this.setTranslate(translate);
       }
+      console.log(translate);
+      this.setTranslate(translate);
     },
 
     onTouchEnd() {
@@ -306,6 +284,8 @@ export default {
       if (this.isScrolling || touches.diff === 0) {
         return;
       }
+
+      this.touches.isTouched = false;
 
       // determine touch is from right to left
       let rtl = touches.diff < 0;
@@ -324,9 +304,7 @@ export default {
 
       this.slideTo(gridIndex, this.speed);
 
-      if (this.autoplay) {
-        setTimeout(this.start, this.speed);
-      }
+      if (this.autoplay) setTimeout(this.start, this.speed);
     },
 
     getEventTouch(e) {
@@ -350,29 +328,25 @@ export default {
         }
       }
 
-      setTimeout(() => {
-        if (typeof speed === 'undefined') {
-          speed = this.speed;
+      if (typeof speed === 'undefined') speed = this.speed;
+
+      this.transitionDuration = speed;
+
+      if (!this.isLoop) {
+        if (index < 0) index = 0;
+        if (index > this.maxGridIndex) index = this.maxGridIndex;
+      }
+
+      this.gridIndex = index;
+      this.setTranslate(-index * this.size);
+
+      [].forEach.call(this.slides, (element, index) => {
+        var cls = element.className.replace(' swipe-item-active', '');
+        if (index === this.gridIndex) {
+          element.className = cls + ' swipe-item-active';
+        } else {
+          element.className = cls;
         }
-
-        this.transitionDuration = speed;
-
-        if (!this.isLoop) {
-          if (index < 0) index = 0;
-          if (index > this.maxGridIndex) index = this.maxGridIndex;
-        }
-
-        this.gridIndex = index;
-        this.setTranslate(-index * this.size);
-
-        [].forEach.call(this.slides, (element, index) => {
-          var cls = element.className.replace(' swipe-item-active', '');
-          if (index === this.gridIndex) {
-            element.className = cls + ' swipe-item-active';
-          } else {
-            element.className = cls;
-          }
-        });
       });
     },
 
@@ -478,10 +452,10 @@ export default {
 
 /* effect slide */
 .effect-scale .yus-swipe-item {
-  transform: scaleY(0.85);
+  transform: scale3d(0.92, 0.8, 1);
   transition: transform 300ms;
 }
 .effect-scale .swipe-item-active {
-  transform: scaleY(1);
+  transform: scale3d(1, 1, 1);
 }
 </style>

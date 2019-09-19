@@ -51,7 +51,7 @@
       >
         <SwipeItem class="swipe-slide" v-for="(item, index) in imgs" :key="index">
           <div class="slide-box">
-            <img :src="item" alt="">
+            <img :src="item" alt />
           </div>
         </SwipeItem>
       </swipe>
@@ -60,7 +60,7 @@
     <div class="demo-block">
       <div class="demo-block-hd">垂直滚动</div>
       <swipe class="swiper-02" :loop="false" direction="vertical" :active-index="0">
-         <SwipeItem class="swipe-slide" v-for="(item, index) in 3" :key="index">
+        <SwipeItem class="swipe-slide" v-for="(item, index) in 3" :key="index">
           <div class="slide-box" :class="['bg'+index]">{{ index }}</div>
         </SwipeItem>
       </swipe>
@@ -69,9 +69,9 @@
     <div class="demo-block">
       <div class="demo-block-hd">loop模式</div>
       <swipe class="swiper-03" :loop="true" direction="horizontal" :active-index="0">
-          <SwipeItem class="swipe-slide" v-for="(item, index) in imgs" :key="index">
+        <SwipeItem class="swipe-slide" v-for="(item, index) in imgs" :key="index">
           <div class="slide-box">
-            <img :src="item" alt="">
+            <img :src="item" alt />
           </div>
         </SwipeItem>
       </swipe>
@@ -82,7 +82,7 @@
       <swipe class="swiper-04" :loop="true" direction="horizontal" :active-index="0" effect="scale">
         <SwipeItem class="swipe-slide" v-for="(item, index) in imgs" :key="index">
           <div class="slide-box">
-            <img :src="item" alt="">
+            <img :src="item" alt />
           </div>
         </SwipeItem>
       </swipe>
@@ -97,7 +97,7 @@ const imgs = [
   '//m.360buyimg.com/mobilecms/s700x280_jfs/t1/54239/34/11063/135392/5d81ee9eE1d1c7e93/5c773e3b05fc114f.jpg!cr_1125x445_0_171!q70.jpg.dpg',
   '//m.360buyimg.com/mobilecms/s700x280_jfs/t1/69641/33/10421/146122/5d8050f9E1eb95850/85b9a7d76aa72260.jpg!cr_1125x445_0_171!q70.jpg.dpg',
   '//imgcps.jd.com/ling4/4477655/5rSB6Z2i5YWo5Z-O54Ot5Yqo/54iG5qy-6ZKc5oOg/p-5c1224c882acdd181d12307f/6886bbbb/cr_1125x445_0_171/s1125x690/q70.jpg'
-]
+];
 export default {
   components: {
     Swipe,
@@ -122,6 +122,21 @@ export default {
 .page {
   min-height: 100vh;
   background: #f5f5f9;
+
+  .bg0 {
+    color: #fff;
+    background: #f8591a;
+  }
+
+  .bg1 {
+    color: #fff;
+    background: #3adbac;
+  }
+
+  .bg2 {
+    color: #fff;
+    background: #0d8fdb;
+  }
 }
 
 .slogan {
@@ -159,9 +174,6 @@ export default {
   height: 100%;
   margin: 10px;
   box-sizing: border-box;
-  background: #fff;
-  border: 1px solid;
-  border-color: #e5e5e5 #d3d3d3 #b9c1c6;
 }
 
 .demo-block {
@@ -200,21 +212,6 @@ export default {
   height: 160px;
   font-size: 30px;
   text-align: center;
-}
-
-.bg0 {
-  color: #fff;
-  background: #f8591a;
-}
-
-.bg1 {
-  color: #fff;
-  background: #3adbac;
-}
-
-.bg2 {
-  color: #fff;
-  background: #0d8fdb;
 }
 
 .swiper-04,

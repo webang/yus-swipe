@@ -118,7 +118,7 @@ export default {
 };
 </script>
 
-<style lang="less">
+<style lang="less" scoped>
 .page {
   min-height: 100vh;
   background: #f5f5f9;
@@ -217,10 +217,11 @@ export default {
 .swiper-04,
 .swiper-03,
 .swiper-01 {
-  height: 140px;
+  height: 150px;
   img {
     display: block;
     width: 100%;
+    height: 150px;
   }
 }
 

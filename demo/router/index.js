@@ -9,11 +9,6 @@ export default new Router({
       path: '/',
       name: 'welcome',
       component: () => import('../views/welcome')
-    },
-    {
-      path: '/scale-effect',
-      name: 'scale-effect',
-      component: () => import('../views/scale-effect')
     }
   ]
 })

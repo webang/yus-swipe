@@ -1,6 +1,6 @@
 # yus-swipe
 
-对于大部分应用来说 [swiper](https://github.com/nolimits4web/swiper) 太大了， 所以需要一款轻量的轮播组件，yus-swiper 能满足你的需求
+对于大部分应用来说 [swiper](https://github.com/nolimits4web/swiper) 太大了， 所以需要一款轻量的轮播组件，yus-swipe 绝对能满足你的需求。
 
 ## Examples
 

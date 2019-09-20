@@ -91,12 +91,12 @@
     <div class="demo-block">
       <div class="demo-block-hd">动态添加</div>
       <swipe class="swiper-02" :active-index="0" :loop="true">
-        <SwipeItem class="swipe-slide" v-for="(item, index) in slides" :key="index">
+        <SwipeItem class="swipe-slide" v-for="(item, index) in slides2" :key="index">
           <div class="slide-box" :class="['bg'+index]">{{ index }}</div>
         </SwipeItem>
       </swipe>
-      <button @click="slides.push(slides.length)">添加</button>
-      <button @click="slides.splice(slides.length - 1, 1)">删除</button>
+      <button @click="slides2.push(slides2.length)">添加</button>
+      <button @click="slides2.splice(slides2.length - 1, 1)">删除</button>
     </div>
   </div>
 </template>
@@ -119,7 +119,8 @@ export default {
   data() {
     return {
       imgs,
-      slides: [0, 1, 2]
+      slides: [0, 1, 2],
+      slides2: [0, 1, 2]
     };
   },
 

@@ -2,11 +2,7 @@
   <div
     class="yus-swipe"
     ref="wrapperEl"
-    :class="[
-    'effect-' + effect,
-    {
-      'is-vertical': !isHorizontal,
-    },]"
+    :class="wrapperCls"
     @touchstart="onTouchStart"
     @touchmove="onTouchMove"
     @touchend="onTouchEnd"
@@ -130,6 +126,15 @@ export default {
     },
     isLoop() {
       return !!this.loop;
+    },
+    wrapperCls() {
+      return [
+        'effect-' + this.effect,
+        {
+          'is-vertical': !this.isHorizontal,
+          'is-horiztontal': this.isHorizontal
+        }
+      ]
     },
     containerStl() {
       return {

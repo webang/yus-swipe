@@ -60,7 +60,7 @@
     <div class="demo-block">
       <div class="demo-block-hd">垂直滚动</div>
       <swipe class="swiper-02" :loop="false" direction="vertical" :active-index="0">
-        <SwipeItem class="swipe-slide" v-for="(item, index) in 3" :key="index">
+        <SwipeItem class="swipe-slide" v-for="(item, index) in slides" :key="index">
           <div class="slide-box" :class="['bg'+index]">{{ index }}</div>
         </SwipeItem>
       </swipe>
@@ -87,6 +87,17 @@
         </SwipeItem>
       </swipe>
     </div>
+
+    <div class="demo-block">
+      <div class="demo-block-hd">动态添加</div>
+      <swipe class="swiper-02" :active-index="0" :loop="true">
+        <SwipeItem class="swipe-slide" v-for="(item, index) in slides" :key="index">
+          <div class="slide-box" :class="['bg'+index]">{{ index }}</div>
+        </SwipeItem>
+      </swipe>
+      <button @click="slides.push(slides.length)">添加</button>
+      <button @click="slides.splice(slides.length - 1, 1)">删除</button>
+    </div>
   </div>
 </template>
 
@@ -98,6 +109,7 @@ const imgs = [
   '//m.360buyimg.com/mobilecms/s700x280_jfs/t1/69641/33/10421/146122/5d8050f9E1eb95850/85b9a7d76aa72260.jpg!cr_1125x445_0_171!q70.jpg.dpg',
   '//imgcps.jd.com/ling4/4477655/5rSB6Z2i5YWo5Z-O54Ot5Yqo/54iG5qy-6ZKc5oOg/p-5c1224c882acdd181d12307f/6886bbbb/cr_1125x445_0_171/s1125x690/q70.jpg'
 ];
+
 export default {
   components: {
     Swipe,
@@ -106,7 +118,8 @@ export default {
 
   data() {
     return {
-      imgs
+      imgs,
+      slides: [0, 1, 2]
     };
   },
 
@@ -236,5 +249,19 @@ export default {
   img {
     border-radius: 6px;
   }
+}
+
+button {
+  display: block;
+  margin: 10px 12px;
+  width: calc(100% - 24px);
+  height: 44px;
+  line-height: 44px;
+  text-align: center;
+  color: #fff;
+  outline: 0;
+  border: 0;
+  font-size: 16px;
+  background: #0d8fdb;
 }
 </style>

@@ -5,7 +5,21 @@
 </template>
 
 <script>
-export default {};
+export default {
+  computed: {
+    index () {
+      return this.$parent.$children.indexOf(this);
+    }
+  },
+
+  created () {
+    this.$parent.children.push(this);
+  },
+
+  destroyed () {
+    this.$parent.children.splice(this.index, 1);
+  }
+};
 </script>
 
 <style>

@@ -2,6 +2,11 @@
 
 基于 vue 的 轻量轮播组件。对于大部分应用来说 [swiper](https://github.com/nolimits4web/swiper) 太大了， 所以需要一款轻量的轮播组件，yus-swipe 绝对能满足你的需求。
 
+## 特性
+
+- 支持设置切换效果
+- 支持动态添加或删除子项
+
 ## Examples
 
 https://webang.github.io/yus-swipe/dist

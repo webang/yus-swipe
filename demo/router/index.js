@@ -9,6 +9,11 @@ export default new Router({
       path: '/',
       name: 'welcome',
       component: () => import('../views/welcome')
+    },
+    {
+      path: '/space-between',
+      name: 'space-between',
+      component: () => import('../views/space-between')
     }
   ]
 })

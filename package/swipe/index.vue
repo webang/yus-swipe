@@ -76,9 +76,10 @@ export default {
       type: String,
       default: 'slide' // slide scale
     },
+    // slide之间间隔
     spaceBetween: {
-      type: Number,
-      default: 20
+      default: 0,
+      type: [String, Number]
     }
   },
 
@@ -143,7 +144,7 @@ export default {
     containerStl() {
       return {
         'transition-duration': `${this.transitionDuration}ms`,
-        [this.rectProp]: `${this.slides.length * this.size}px`,
+        [this.rectProp]: `${this.maxTranslate + this.size}px`,
         transform: this.isHorizontal
           ? `translate3d(${this.translate}px, 0, 0)`
           : `translate3d(0, ${this.translate}px, 0)`
@@ -187,6 +188,7 @@ export default {
       // setup size and el
       const { wrapperEl, containerEl } = this.$refs;
       const { width, height } = wrapperEl.getBoundingClientRect();
+      const spaceBetween = +this.spaceBetween || 0;
 
       this.width = width;
       this.height = height;
@@ -197,7 +199,9 @@ export default {
       this.realLength = this.children.length;
 
       // create loop
-      if (this.isLoop) this.createLoopEl();
+      if (this.isLoop) {
+        this.createLoopEl();
+      }
 
       // setup slides
       this.slides = containerEl.children;
@@ -206,7 +210,14 @@ export default {
       // setup slide item style
       [].forEach.call(this.slides, (element, index) => {
         element.style[this.rectProp] = this.size + 'px';
-        this.slidesGrid[index] = index * this.size;
+        if (index !== this.slides.length - 1) {
+          if (this.isHorizontal) {
+            element.style['margin-right'] = spaceBetween + 'px';
+          } else {
+            element.style['margin-bottom'] = spaceBetween + 'px';
+          }
+        }
+        this.slidesGrid[index] = index * this.size + index * spaceBetween;
       });
 
       this.minGridIndex = 0;
@@ -215,13 +226,17 @@ export default {
       this.maxTranslate = this.slidesGrid[this.maxGridIndex];
 
       // setup initial gridIndex
-      if (this.isLoop && !this.initialized) this.gridIndex = this.activeIndex + 1;
+      if (this.isLoop && !this.initialized) {
+        this.gridIndex = this.activeIndex + 1;
+      }
 
       // setup initial postion
       this.slideTo(this.gridIndex, 0);
 
       // setup autoplay
-      if (this.autoplay) this.start();
+      if (this.autoplay) {
+        this.start();
+      }
 
       this.initialized = true;
     },
@@ -239,7 +254,9 @@ export default {
       this.touches.isMoved = false;
       this.transitionDuration = 0;
 
-      if (this.autoplay) this.stop();
+      if (this.autoplay) {
+        this.stop();
+      }
     },
 
     onTouchMove(event) {
@@ -279,12 +296,12 @@ export default {
         if (Math.abs(translate) >= this.maxTranslate) {
           this.slideTo(1, 0);
           resetTouch();
-          translate = touches.diff + 1 * this.size * -1;
+          translate = touches.diff + this.getPosByGridIndex(1);
           this.touches.startTranslate = translate;
         } else if (translate >= 0) {
           this.slideTo(this.slidesGrid.length - 2, 0);
           resetTouch();
-          translate = touches.diff + (this.slidesGrid.length - 2) * this.size * -1;
+          translate = touches.diff + this.getPosByGridIndex(this.slidesGrid.length - 2);
           this.touches.startTranslate = translate;
         }
       } else {
@@ -320,11 +337,20 @@ export default {
 
       this.slideTo(gridIndex, this.speed);
 
-      if (this.autoplay) setTimeout(this.start, this.speed);
+      if (this.autoplay) {
+        setTimeout(this.start, this.speed);
+      }
     },
 
     getEventTouch(e) {
       return e.changedTouches ? e.changedTouches[0] : e;
+    },
+
+    // 通过 gridIndex 获取偏移距离
+    getPosByGridIndex(index) {
+      console.log(index);
+      console.log(this.slidesGrid)
+      return -this.slidesGrid[index];
     },
 
     // index
@@ -332,14 +358,15 @@ export default {
       if (this.isLoop && index > this.maxGridIndex) {
         this.transitionDuration = 0;
         this.gridIndex = 1;
-        this.setTranslate(-this.size);
+        this.setTranslate(this.getPosByGridIndex(1));
         index = 2;
       }
 
       if (this.isLoop && index < this.minGridIndex) {
         this.transitionDuration = 0;
         this.gridIndex = this.maxGridIndex - 1;
-        this.setTranslate(-(this.maxGridIndex - 1) * this.size);
+        let translate = this.getPosByGridIndex(this.maxGridIndex - 1)
+        this.setTranslate(translate);
         index = this.maxGridIndex - 2;
       }
 
@@ -359,7 +386,8 @@ export default {
       setTimeout(() => {
         this.transitionDuration = speed;
         this.gridIndex = index;
-        this.setTranslate(-index * this.size);
+        // this.setTranslate(-index * this.size);
+        this.setTranslate(this.getPosByGridIndex(index));
         
         [].forEach.call(this.slides, (element, index) => {
           let cls = element.className.replace(' swipe-item-active', '');

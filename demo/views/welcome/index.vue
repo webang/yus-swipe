@@ -30,6 +30,7 @@
       <swipe
         class="swiper-00"
         :loop="true"
+        :autoplay="true"
         direction="horizontal"
         :active-index="0"
         @index-changed="handleIndexChanged"
@@ -78,8 +79,8 @@
     </div>
 
     <div class="demo-block">
-      <div class="demo-block-hd">切换效果</div>
-      <swipe class="swiper-04" :loop="true" direction="horizontal" :active-index="0" effect="scale">
+      <div class="demo-block-hd">切换效果+autoplay</div>
+      <swipe class="swiper-04" :loop="true" :autoplay="true" effect="scale">
         <SwipeItem class="swipe-slide" v-for="(item, index) in imgs" :key="index">
           <div class="slide-box">
             <img :src="item" alt />
@@ -97,6 +98,18 @@
       </swipe>
       <button @click="slides2.push(slides2.length)">添加</button>
       <button @click="slides2.splice(slides2.length - 1, 1)">删除</button>
+    </div>
+
+    <div class="demo-block">
+      <div class="demo-block-hd">监听index-changed事件</div>
+      <swipe class="swiper-03" :loop="true" :autoplay="true" :active-index="index1" @index-changed="handleIndexChanged1">
+        <SwipeItem class="swipe-slide" v-for="(item, index) in imgs" :key="index">
+          <div class="slide-box">
+            <img :src="item" alt />
+          </div>
+        </SwipeItem>
+      </swipe>
+      <div>当前索引：{{ index1 }}</div>
     </div>
   </div>
 </template>
@@ -120,13 +133,17 @@ export default {
     return {
       imgs,
       slides: [0, 1, 2],
-      slides2: [0, 1, 2]
+      slides2: [0, 1, 2],
+      index1: 0
     };
   },
 
   methods: {
     handleIndexChanged(val) {
-      console.log(val);
+      // console.log(val);
+    },
+    handleIndexChanged1(val) {
+      this.index1 = val;
     }
   }
 };
@@ -134,6 +151,8 @@ export default {
 
 <style lang="less" scoped>
 .page {
+  max-width: 400px;
+  margin: 0 auto;
   min-height: 100vh;
   background: #f5f5f9;
 
@@ -186,7 +205,7 @@ export default {
   justify-content: center;
   flex: 1;
   height: 100%;
-  margin: 10px;
+  // margin: 10px;
   box-sizing: border-box;
 }
 

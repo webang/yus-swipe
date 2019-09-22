@@ -14,12 +14,16 @@
       <slot></slot>
     </div>
     <slot name="pagination">
-      <div class="yus-swipe-pagination">
+      <div class="yus-swipe-dots" :class="{
+        'yus-swipe-dots--vertical': !isHorizontal
+      }">
         <span
-          class="yus-swipe-pagination-item"
+          class="yus-swipe-dot"
           v-for="(item, index) in realLength"
           :key="index"
-          :class="{'yus-swipe-pagination-item-active': index === currentIndex}"
+          :class="{
+            'yus-swipe-dot--active': index === currentIndex
+          }"
         />
       </div>
     </slot>
@@ -65,7 +69,7 @@ export default {
     // 轮播间隔
     delay: {
       type: Number,
-      default: 3000
+      default: 4000
     },
     // 切换效果
     effect: {
@@ -331,6 +335,7 @@ export default {
         this.setTranslate(-this.size);
         index = 2;
       }
+
       if (this.isLoop && index < this.minGridIndex) {
         this.transitionDuration = 0;
         this.gridIndex = this.maxGridIndex - 1;
@@ -338,25 +343,32 @@ export default {
         index = this.maxGridIndex - 2;
       }
 
-      if (typeof speed === 'undefined') speed = this.speed;
-
-      this.transitionDuration = speed;
-
-      if (!this.isLoop) {
-        if (index < 0) index = 0;
-        if (index > this.maxGridIndex) index = this.maxGridIndex;
+      if (typeof speed === 'undefined') {
+        speed = this.speed;
       }
 
-      this.gridIndex = index;
-      this.setTranslate(-index * this.size);
-
-      [].forEach.call(this.slides, (element, index) => {
-        let cls = element.className.replace(' swipe-item-active', '');
-        if (index === this.gridIndex) {
-          element.className = cls + ' swipe-item-active';
-        } else {
-          element.className = cls;
+      if (!this.isLoop) {
+        if (index < 0) {
+          index = 0;
         }
+        if (index > this.maxGridIndex) {
+          index = this.maxGridIndex;
+        }
+      }
+
+      setTimeout(() => {
+        this.transitionDuration = speed;
+        this.gridIndex = index;
+        this.setTranslate(-index * this.size);
+        
+        [].forEach.call(this.slides, (element, index) => {
+          let cls = element.className.replace(' swipe-item-active', '');
+          if (index === this.gridIndex) {
+            element.className = cls + ' swipe-item-active';
+          } else {
+            element.className = cls;
+          }
+        });
       });
     },
 
@@ -423,57 +435,4 @@ export default {
 };
 </script>
 
-<style>
-.yus-swipe {
-  overflow: hidden;
-  position: relative;
-}
-
-.yus-swipe-container {
-  display: flex;
-  overflow: hidden;
-  width: 100%;
-  height: 100%;
-  will-change: transform;
-  transition: transform 300ms ease;
-}
-
-.yus-swipe-pagination {
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  height: 18px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.yus-swipe-pagination-item {
-  display: inline-block;
-  width: 8px;
-  height: 3px;
-  background: #cec4c4;
-  margin: 0 3px;
-  border-radius: 4px;
-  transition: all 300ms;
-}
-
-.yus-swipe-pagination-item-active {
-  width: 14px;
-  background: #eaf1f5;
-}
-
-/* vertical */
-.yus-swipe.is-vertical .yus-swipe-container {
-  flex-direction: column;
-}
-
-/* effect slide */
-.effect-scale .yus-swipe-item {
-  transform: scale3d(0.92, 0.8, 1);
-  transition: transform 300ms;
-}
-.effect-scale .swipe-item-active {
-  transform: scale3d(1, 1, 1);
-}
-</style>
+<style src="./index.css"></style>

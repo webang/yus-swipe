@@ -94,21 +94,41 @@
     </div>
 
     <div class="mod">
-    <div class="mod-hd">space-between=10</div>
-    <swipe
-      ref="swipe"
-      class="swiper"
-      :loop="true"
-      :autoplay="true"
-      direction="horizontal"
-      :active-index="0"
-      :space-between="10"
-      @index-changed="handleIndexChanged"
-    >
-      <SwipeItem class="swipe-slide" v-for="(item, index) in 3" :key="index">
-        <img :src="imgs[index]" alt="">
-      </SwipeItem>
-    </swipe>
+      <div class="mod-hd">space-between=10</div>
+      <swipe
+        ref="swipe"
+        class="swiper"
+        :loop="true"
+        :autoplay="true"
+        direction="horizontal"
+        :active-index="0"
+        :space-between="10"
+        @index-changed="handleIndexChanged"
+      >
+        <SwipeItem class="swipe-slide" v-for="(item, index) in 3" :key="index">
+          <img :src="imgs[index]" alt="">
+        </SwipeItem>
+      </swipe>
+    </div>
+
+    <div class="mod">
+      <div class="mod-hd">自定义分页器</div>
+      <swipe
+        class="swiper"
+        :active-index="index2"
+        @index-changed="(activeIndex) => index2=activeIndex"
+      >
+        <SwipeItem
+          class="swipe-slide"
+          v-for="(item, index) in 3"
+          :key="index"
+        >
+          <img :src="imgs[index]" alt="">
+        </SwipeItem>
+        <div class="my-pager" slot="pagination">
+          <span>{{ index2 + 1}}/{{ imgs.length }}</span>
+        </div>
+      </swipe>
     </div>
   </div>
 </template>
@@ -136,7 +156,8 @@ export default {
       imgs,
       slides: [0, 1, 2],
       slides2: [0, 1, 2],
-      index1: 0
+      index1: 0,
+      index2: 0
     };
   },
 
@@ -287,5 +308,17 @@ img {
 
 p {
   margin-top: 10px;
+}
+
+.my-pager {
+  position: absolute;
+  right: 2px;
+  bottom: 2px;
+  padding: 2px 4px;
+  font-size: 10px;
+  line-height: 14px;
+  background:rgba(0, 0, 0, .1);
+  border-radius: 2px;
+  color: #fff;
 }
 </style>

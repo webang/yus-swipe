@@ -130,6 +130,22 @@
         </div>
       </swipe>
     </div>
+
+    <div class="mod">
+      <div class="mod-hd">指定宽高(height=300)</div>
+      <swipe class="swiper" :height="300">
+        <SwipeItem
+          class="swipe-slide"
+          v-for="(item, index) in 3"
+          :key="index"
+        >
+          <div class="slide-box" :class="['bg'+index]">{{ index }}</div>
+        </SwipeItem>
+        <div class="my-pager" slot="pagination">
+          <span>{{ index2 + 1}}/{{ imgs.length }}</span>
+        </div>
+      </swipe>
+    </div>
   </div>
 </template>
 

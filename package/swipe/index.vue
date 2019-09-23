@@ -79,16 +79,18 @@ export default {
     // slide之间间隔
     spaceBetween: {
       default: 0,
-      type: [String, Number]
-    }
+      type: Number
+    },
+    width: Number,
+    height: Number
   },
 
   data() {
     return {
       wrapperEl: null,
       containerEl: null,
-      width: undefined,
-      height: undefined,
+      curWidth: undefined,
+      curHeight: undefined,
       slides: [],
       isScrolling: undefined,
       length: undefined,
@@ -190,13 +192,21 @@ export default {
       const { width, height } = wrapperEl.getBoundingClientRect();
       const spaceBetween = +this.spaceBetween || 0;
 
-      this.width = width;
-      this.height = height;
+      this.curWidth = this.width || width
+      this.curHeight = this.height || height
       this.rectProp = this.isHorizontal ? 'width' : 'height';
-      this.size = this.isHorizontal ? +this.width : +this.height;
+      this.size = this.isHorizontal ? +this.curWidth : +this.curHeight;
       this.wrapperEl = wrapperEl;
       this.containerEl = containerEl;
       this.realLength = this.children.length;
+
+      if (/*this.isHorizontal && */this.width) {
+        this.wrapperEl.style.width = this.width + 'px';
+      }
+
+      if (/*!this.isHorizontal && */this.height) {
+        this.wrapperEl.style.height = this.height + 'px';
+      }
 
       // create loop
       if (this.isLoop) {

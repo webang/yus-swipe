@@ -75,7 +75,7 @@ new Vue({
 | autoplay             | `Boolean` | `false`        | Set true enable auto play                           |
 | delay                | `Number`  | `3000`         | wait time when enable autoplay                      |
 | loop                 | `Boolean` | `false`        | Set true to enable continuous loop mode             |
-| space-between        |  `Number` | `0`            | distance between slide |
+| space-between        |  `Number` | `0`            | distance between adjacent slides |
 
 ### Methods
 

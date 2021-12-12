@@ -93,16 +93,12 @@ export default {
       curHeight: undefined,
       slides: [],
       isScrolling: undefined,
-      length: undefined,
       size: undefined,
       touches: {
         startX: undefined,
         startY: undefined,
-        endX: undefined,
-        endY: undefined,
         diff: undefined,
         diffX: undefined,
-        diddY: undefined,
         currentX: undefined,
         currentY: undefined,
         startTranslate: undefined,
@@ -139,7 +135,7 @@ export default {
         'effect-' + this.effect,
         {
           'is-vertical': !this.isHorizontal,
-          'is-horiztontal': this.isHorizontal
+          'is-horizontal': this.isHorizontal
         }
       ]
     },
@@ -200,11 +196,11 @@ export default {
       this.containerEl = containerEl;
       this.realLength = this.children.length;
 
-      if (/*this.isHorizontal && */this.width) {
+      if (this.width) {
         this.wrapperEl.style.width = this.width + 'px';
       }
 
-      if (/*!this.isHorizontal && */this.height) {
+      if (this.height) {
         this.wrapperEl.style.height = this.height + 'px';
       }
 
@@ -240,7 +236,7 @@ export default {
         this.gridIndex = this.activeIndex + 1;
       }
 
-      // setup initial postion
+      // setup initial position
       this.slideTo(this.gridIndex, 0);
 
       // setup autoplay
@@ -261,7 +257,6 @@ export default {
       this.touches.startY = touch.pageY;
       this.touches.startTranslate = this.translate;
       this.touches.isTouched = true;
-      this.touches.isMoved = false;
       this.transitionDuration = 0;
 
       if (this.autoplay) {
@@ -333,7 +328,7 @@ export default {
       // determine touch is from right to left
       let rtl = touches.diff < 0;
 
-      // calclate new gridIndex
+      // calculate new gridIndex
       let diffTime = Utils.now() - touches.time;
       let isShortTouch = diffTime < SHORT_TOUCH;
       let gridIndex = this.gridIndex;
@@ -358,8 +353,6 @@ export default {
 
     // 通过 gridIndex 获取偏移距离
     getPosByGridIndex(index) {
-      console.log(index);
-      console.log(this.slidesGrid)
       return -this.slidesGrid[index];
     },
 
@@ -396,7 +389,6 @@ export default {
       setTimeout(() => {
         this.transitionDuration = speed;
         this.gridIndex = index;
-        // this.setTranslate(-index * this.size);
         this.setTranslate(this.getPosByGridIndex(index));
         
         [].forEach.call(this.slides, (element, index) => {
